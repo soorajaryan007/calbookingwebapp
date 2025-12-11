@@ -1,37 +1,31 @@
+---
+
+# **Clinic Scheduler — Full-Stack Appointment Booking System**
+
+A modern appointment-booking platform integrating **React**, **FastAPI**, **SQLite**, and **Cal.com API**.
+Users can select an event type, pick a date, view generated time slots, and confirm a booking with name & email.
+Each booking is **stored locally** and **synced with Cal.com** in real time.
 
 ---
 
-# **Clinic Scheduler — Full-Stack Appointment Booking App**
+## ✨ **Features**
 
-A minimal full-stack scheduling system built using:
-
-* **Frontend:** React + Vite
-* **Backend:** FastAPI (Python)
-* **Database:** SQLite
-* **External API:** Cal.com (Booking engine)
-
-This app allows users to select an event type, pick a date, view available slots, enter name/email, and book an appointment.
-All bookings get stored locally (SQLite) and also created in **Cal.com** via its REST API.
-
----
-
-# **📦 Features**
-
-✔ Fetch consultation/event types from Cal.com
-✔ Auto-generate available time slots
-✔ Store bookings locally in SQLite
-✔ Create bookings in Cal.com (with name/email support)
-✔ Fully functional React UI
-✔ Developer-friendly clean architecture
+* Fetch event types dynamically from **Cal.com API**
+* Auto-generate available timeslots
+* Create verified bookings (with name & email)
+* Store bookings locally in **SQLite**
+* Fully responsive React UI
+* Clean backend architecture
+* **Docker Support** for one-command startup
+* Developer-friendly documentation
 
 ---
 
----
-
-# **🛠️ Project Structure**
+## 🏗️ **Project Architecture**
 
 ```
 calbookingwebapp/
+│
 ├── backend/
 │   ├── app/
 │   │   ├── main.py
@@ -40,39 +34,119 @@ calbookingwebapp/
 │   │   ├── slot_engine.py
 │   │   ├── database.py
 │   │   ├── config.py
-│   ├── bookings.db
+│   ├── Dockerfile
 │   ├── requirements.txt
-│   └── .env
+│   └── .env   (not committed - holds API key)
 │
-└── frontend/
-    ├── src/
-    │   ├── api/
-    │   ├── components/
-    │   ├── pages/
-    │   ├── App.jsx
-    │   └── main.jsx
-    ├── package.json
-    └── vite.config.js
+├── frontend/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── Dockerfile
+│   ├── package.json
+│   └── vite.config.js
+│
+└── docker-compose.yml
 ```
 
 ---
 
-# **🚀 1. Backend Setup (FastAPI)**
+# 🐳 **1. Run the Entire App with Docker (Recommended)**
 
-### **📌 Prerequisites**
-
-* Python 3.10 or higher
-* pip
+Running the stack via Docker is the easiest and fastest method.
+No Python, Node.js, pip, or npm required on your machine.
 
 ---
 
-## **1️⃣ Navigate to backend folder**
+## **1️⃣ Prerequisites**
+
+Ensure Docker is installed:
+
+```bash
+docker --version
+docker compose version
+```
+
+---
+
+## **2️⃣ Add `.env` inside the backend folder**
+
+Create the file:
+
+```
+backend/.env
+```
+
+Add your Cal.com API key:
+
+```
+CAL_API_KEY=cal_live_xxxxxxxxxxxxxxxxxxxx
+```
+
+> This file is ignored by Git and **must exist before building** the Docker image.
+
+---
+
+## **3️⃣ Start the full system**
+
+From the project root:
+
+```bash
+docker compose up --build
+```
+
+Docker will:
+
+✔ Build backend image
+✔ Build frontend image
+✔ Create network
+✔ Start both containers
+
+---
+
+## **4️⃣ Access the Application**
+
+| Service            | URL                                                      |
+| ------------------ | -------------------------------------------------------- |
+| Frontend (React)   | [http://localhost:5173](http://localhost:5173)           |
+| Backend (FastAPI)  | [http://localhost:8000](http://localhost:8000)           |
+| API Docs (Swagger) | [http://localhost:8000/docs](http://localhost:8000/docs) |
+
+---
+
+## **5️⃣ Stop containers**
+
+```bash
+docker compose down
+```
+
+---
+
+## **6️⃣ Rebuild cleanly**
+
+```bash
+docker compose build --no-cache
+docker compose up
+```
+
+---
+
+# ⚙️ **2. Manual Local Setup (Optional)**
+
+If not using Docker, you can run frontend and backend separately.
+
+---
+
+# 🔧 **Backend Setup (FastAPI)**
+
+## **1️⃣ Navigate to backend**
 
 ```bash
 cd backend
 ```
-
----
 
 ## **2️⃣ Create virtual environment**
 
@@ -82,90 +156,56 @@ source venv/bin/activate   # Linux/Mac
 venv\Scripts\activate      # Windows
 ```
 
----
-
 ## **3️⃣ Install dependencies**
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
-## **4️⃣ Add your `.env` file**
-
-Create:
+## **4️⃣ Create `.env`**
 
 ```
-backend/.env
+CAL_API_KEY=cal_live_xxxxxxxxx
 ```
 
-Paste:
-
-```
-CAL_API_KEY=your_cal_com_api_key_here
-```
-
----
-
-## **5️⃣ Initialize the database**
-
-SQLite DB will auto-create when backend starts.
-
----
-
-## **6️⃣ Run FastAPI backend**
+## **5️⃣ Run the server**
 
 ```bash
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Backend is now running at:
+Backend runs at:
 
 ```
 http://localhost:8000
-```
-
-API docs available at:
-
-```
 http://localhost:8000/docs
 ```
 
 ---
 
-# **🖥️ 2. Frontend Setup (React + Vite)**
+# 🖥️ **Frontend Setup (React + Vite)**
 
-### **📌 Prerequisites**
-
-* Node.js 18+
-* npm or yarn
-
----
-
-## **1️⃣ Navigate to frontend folder**
+## **1️⃣ Navigate to frontend**
 
 ```bash
 cd frontend
 ```
 
----
+## **2️⃣ Install node dependencies**
 
-## **2️⃣ Install dependencies**
+> ⚠️ Vite requires **Node.js 20+**
 
 ```bash
 npm install
 ```
 
----
-
-## **3️⃣ Start the React dev server**
+## **3️⃣ Run the dev server**
 
 ```bash
 npm run dev
 ```
 
-Frontend runs at:
+Now open:
 
 ```
 http://localhost:5173
@@ -173,123 +213,70 @@ http://localhost:5173
 
 ---
 
-# **🔑 3. Cal.com API Setup**
+# 🔑 **Cal.com API Setup**
 
-You must connect your backend to Cal.com’s booking engine.
-
----
-
-## **1️⃣ Create Developer API Key**
-
-Go to:
-
-👉 [https://app.cal.com/settings/developer](https://app.cal.com/settings/developer)
-
-Create a **Personal Access Token**
-Copy the key (looks like `cal_live_xxxxxxxx`).
-
----
-
-## **2️⃣ Add to `.env`**
-
-Inside `backend/.env`:
+1. Open: [https://app.cal.com/settings/developer](https://app.cal.com/settings/developer)
+2. Create a **Personal Access Token**
+3. Copy the key
+4. Add it to `backend/.env`:
 
 ```
-CAL_API_KEY=cal_live_xxxxxxxxxxxxxxxxxxxxx
+CAL_API_KEY=cal_live_xxxxxxx
 ```
 
----
+5. Ensure your event types exist in Cal.com
+   [https://app.cal.com/event-types](https://app.cal.com/event-types)
 
-## **3️⃣ Ensure your Cal.com event types exist**
+6. Ensure event duration matches your slot-engine logic:
 
-Go to:
-
-👉 [https://app.cal.com/event-types](https://app.cal.com/event-types)
-
-Create event types such as:
-
-* General Consultation (30 min)
-* Follow-Up (15 min)
-* Physical Exam (45 min)
-* Specialist (60 min)
-
-The backend fetches these types dynamically using the API.
+   * Example: 15-minute event must have exactly `end - start = 15 minutes`
 
 ---
 
-## **4️⃣ Ensure the event length matches your slot duration**
+# 🔄 **Booking Workflow**
 
-If your event is **15 minutes**, your `start` and `end` times must be exactly 15 minutes apart.
-
-Example Valid Booking Payload:
-
-```json
-{
-  "eventTypeId": 4136397,
-  "start": "2025-12-31T10:00:00.000Z",
-  "end": "2025-12-31T10:15:00.000Z",
-  "language": "en",
-  "responses": {
-    "name": "Sooraj Aryan",
-    "email": "test@example.com"
-  }
-}
-```
-
----
-
-# **📡 End-to-End Flow**
-
-1. Frontend requests **event types** → backend → Cal.com API
+1. React loads event types from backend
 2. User selects event + date
-3. Frontend requests **available slots** → backend
-4. Backend generates slot list
-5. User enters **name/email** and confirms booking
-6. Backend:
+3. Backend returns generated time slots
+4. User fills **name** and **email**
+5. Backend:
 
-   * Stores booking in SQLite
+   * Saves booking in SQLite
    * Sends booking request to Cal.com
-7. Cal.com confirms ≫ Frontend shows booking details
+6. React shows confirmation message
 
 ---
 
-# **🧪 Testing**
+# 🧪 **Testing**
 
-Check backend logs for booking payloads:
+Check backend logs:
+
+```bash
+docker logs clinic-backend
+```
+
+or when running manually:
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-Use browser DevTools → Network tab to see API calls.
-
 ---
 
-# **🐞 Common Issues**
+# 📁 **.gitignore**
 
-### **❌ CORS error**
+Included to prevent leaking sensitive data:
 
-Add this in FastAPI (already included):
-
-```python
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+```
+backend/.env
+backend/venv/
+backend/__pycache__/
+frontend/node_modules/
+*.log
 ```
 
-### **❌ Invalid event length**
-
-Make sure your `end - start` matches your event type duration.
-
-### **❌ Missing CAL_API_KEY**
-
-Ensure `.env` file exists in backend folder.
-
 ---
 
 
-# **🎉 You’re Ready to Run the App!**
+
 
