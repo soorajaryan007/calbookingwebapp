@@ -1,17 +1,17 @@
 import axios from "axios";
 
-const API = axios.create({
-  baseURL: "http://127.0.0.1:8000",
-});
+const API_BASE = "http://127.0.0.1:8000";
 
-// Fetch event types
-export const getEventTypes = () => API.get("/event-types");
+export async function getEventTypes() {
+  return axios.get(`${API_BASE}/event-types`);
+}
 
-// Fetch availability
-export const getAvailability = (eventTypeId, date) =>
-  API.get(`/availability?event_type_id=${eventTypeId}&date=${date}`);
+export async function getAvailability(eventTypeId, date) {
+  return axios.get(`${API_BASE}/availability`, {
+    params: { event_type_id: eventTypeId, date },
+  });
+}
 
-// Create booking
-export const createBooking = (data) => API.post("/book", data);
-
-export default API;
+export async function bookSlotAPI(payload) {
+  return axios.post(`${API_BASE}/book`, payload);
+}
