@@ -1,6 +1,6 @@
 ---
 
-# **Clinic Scheduler — Full-Stack Appointment Booking System**
+# **Clinic Scheduler —- Full-Stack Appointment Booking System**
 
 A modern appointment-booking platform integrating **React**, **FastAPI**, **SQLite**, and **Cal.com API**.
 Users can select an event type, pick a date, view generated time slots, and confirm a booking with name & email.

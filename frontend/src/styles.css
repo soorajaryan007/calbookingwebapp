@@ -1,0 +1,105 @@
+/* Page background */
+.booking-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+  background: #f5f7fa;
+  min-height: 100vh;
+}
+
+/* Content card */
+.booking-card {
+  width: 100%;
+  max-width: 700px;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.08);
+}
+
+/* Section title */
+.section-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2d3d;
+  margin-bottom: 6px;
+}
+
+/* Subtitle text */
+.section-subtitle {
+  font-size: 15px;
+  color: #52637a;
+  margin-bottom: 20px;
+}
+
+/* Blocks */
+.section-block {
+  margin-top: 25px;
+}
+
+/* Labels */
+.label {
+  display: block;
+  font-size: 14px;
+  color: #2c3e50;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+/* Inputs */
+input,
+select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #d0d7de;
+  font-size: 15px;
+  outline: none;
+  transition: 0.2s;
+}
+
+input:focus,
+select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 4px rgba(59, 130, 246, 0.4);
+}
+
+/* Slot grid */
+.slot-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Slot button */
+.slot-btn {
+  padding: 10px 16px;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.slot-btn:hover {
+  background: #dbeafe;
+}
+
+/* Book Button */
+.book-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 14px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.book-btn:hover {
+  background: #2563eb;
+}

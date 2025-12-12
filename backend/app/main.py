@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+from datetime import datetime
+import pytz
 
+from zoneinfo import ZoneInfo
 from app.models import BookingRequest
 from app.slot_engine import generate_slots
 from app.database import get_connection
@@ -11,6 +14,7 @@ load_dotenv()
 
 app = FastAPI(title="Clinic Booking API")
 
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -33,9 +37,37 @@ def availability(event_type_id: int, date: str):
     return generate_slots(event_type_id, date)
 
 
+# ---------------------------------------------
+# Convert IST → UTC for Cal.com
+# ---------------------------------------------
+
+
+
+
+def to_utc(iso_time_str):
+    # Convert Z → +00:00 for fromisoformat()
+    if iso_time_str.endswith("Z"):
+        iso_time_str = iso_time_str.replace("Z", "+00:00")
+
+    # Parse ISO string directly into datetime
+    dt = datetime.fromisoformat(iso_time_str)
+
+    # Convert FROM Asia/Kolkata TO UTC
+    ist_time = dt.replace(tzinfo=ZoneInfo("Asia/Kolkata"))
+    utc_time = ist_time.astimezone(ZoneInfo("UTC"))
+
+    return utc_time.isoformat()
+
+
+
+
 @app.post("/book")
 def book(req: BookingRequest):
-    # store locally
+    # Convert times to UTC for Cal.com API
+    start_utc = to_utc(req.start)
+    end_utc = to_utc(req.end)
+
+    # 1) Save locally to SQLite
     conn = get_connection()
     c = conn.cursor()
     c.execute(
@@ -45,11 +77,11 @@ def book(req: BookingRequest):
     conn.commit()
     conn.close()
 
-    # send to Cal.com
+    # 2) Send to Cal.com (in UTC now)
     cal_response = send_booking_to_cal(
         req.event_type_id,
-        req.start,
-        req.end,
+        start_utc,
+        end_utc,
         req.name,
         req.email
     )
