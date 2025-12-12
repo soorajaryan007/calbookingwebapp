@@ -10,17 +10,29 @@ export default function BookingResult({ result }) {
     );
   }
 
-  const data = result.cal_response.data;
+  // -----------------------------
+  // SAFE EXTRACTION BLOCK (ADD THIS)
+  // -----------------------------
+  const data = result.cal_response?.data || {};
+
+  const name = data.responses?.name || "N/A";
+  const email = data.attendees?.[0]?.email || "N/A";
+  const date = data.startTime?.slice(0, 10) || "N/A";
+  const start = data.startTime?.slice(11, 16) || "N/A";
+  const end = data.endTime?.slice(11, 16) || "N/A";
+  const bookingId = data.id || "N/A";
+  // -----------------------------
 
   return (
     <div className="success">
       <h3>Booking Confirmed ✔</h3>
-      <p><strong>Patient:</strong> {data.responses.name}</p>
-      <p><strong>Email:</strong> {data.attendees[0].email}</p>
-      <p><strong>Date:</strong> {data.startTime.slice(0, 10)}</p>
-      <p><strong>Time:</strong> {data.startTime.slice(11, 16)}</p>
-      <p><strong>Ends:</strong> {data.endTime.slice(11, 16)}</p>
-      <p><strong>Booking ID:</strong> {data.id}</p>
+
+      <p><strong>Patient:</strong> {name}</p>
+      <p><strong>Email:</strong> {email}</p>
+      <p><strong>Date:</strong> {date}</p>
+      <p><strong>Time:</strong> {start}</p>
+      <p><strong>Ends:</strong> {end}</p>
+      <p><strong>Booking ID:</strong> {bookingId}</p>
     </div>
   );
 }

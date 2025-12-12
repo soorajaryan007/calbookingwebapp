@@ -4,6 +4,7 @@ import DatePicker from "../components/DatePicker";
 import SlotGrid from "../components/SlotGrid";
 import BookingForm from "../components/BookingForm";
 import BookingResult from "../components/BookingResult";
+import "../styles.css"; // Make sure styles are imported
 
 export default function Home() {
   const [eventTypeId, setEventTypeId] = useState("");
@@ -12,30 +13,62 @@ export default function Home() {
   const [result, setResult] = useState(null);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Clinic Booking</h1>
+    <div className="booking-wrapper">
 
-      <EventTypeSelector onSelect={setEventTypeId} />
+      {/* Card-style content section */}
+      <div className="booking-card">
 
-      {eventTypeId && <DatePicker onSelect={setDate} />}
+        <h2 className="section-title">Clinic Appointment Scheduler</h2>
+        <p className="section-subtitle">
+          Book a consultation with ease. Select a service, pick a date, choose a slot, and you're set.
+        </p>
 
-      {eventTypeId && date && (
-        <SlotGrid
-          eventTypeId={eventTypeId}
-          date={date}
-          onSelect={setSelectedSlot}
-        />
-      )}
+        {/* Event Types */}
+        <div className="section-block">
+          <label className="label">Consultation Type</label>
+          <EventTypeSelector onSelect={setEventTypeId} />
+        </div>
 
-      {selectedSlot && (
-        <BookingForm
-          selectedSlot={selectedSlot}
-          eventTypeId={eventTypeId}
-          setResult={setResult}
-        />
-      )}
+        {/* Date Picker */}
+        {eventTypeId && (
+          <div className="section-block">
+            <label className="label">Select Date</label>
+            <DatePicker onSelect={setDate} />
+          </div>
+        )}
 
-      {result && <BookingResult result={result} />}
+        {/* Slots */}
+        {eventTypeId && date && (
+          <div className="section-block">
+            <label className="label">Available Slots</label>
+            <SlotGrid
+              eventTypeId={eventTypeId}
+              date={date}
+              onSelect={setSelectedSlot}
+            />
+          </div>
+        )}
+
+        {/* Booking Form */}
+        {selectedSlot && (
+          <div className="section-block">
+            <label className="label">Enter Your Details</label>
+            <BookingForm
+              selectedSlot={selectedSlot}
+              eventTypeId={eventTypeId}
+              setResult={setResult}
+            />
+          </div>
+        )}
+
+        {/* Booking Result */}
+        {result && (
+          <div className="section-block">
+            <BookingResult result={result} />
+          </div>
+        )}
+
+      </div>
     </div>
   );
 }
