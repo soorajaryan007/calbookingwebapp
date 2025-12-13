@@ -9,6 +9,7 @@ from app.models import BookingRequest
 from app.slot_engine import generate_slots
 from app.database import get_connection
 from app.cal import send_booking_to_cal, get_event_types
+from app.cal import cancel_booking_on_cal
 
 load_dotenv()
 
@@ -85,9 +86,31 @@ def book(req: BookingRequest):
         req.name,
         req.email
     )
+    if "data" not in cal_response or "uid" not in cal_response["data"]:
+        return {
+            "status": "error",
+            "message": "Booking failed on Cal.com",
+            "cal_response": cal_response
+        }
+
+    return {
+    "status": "success",
+    "booking_uid": cal_response["data"]["uid"],
+    "start": req.start,
+    "end": req.end,
+    "name": req.name,
+    "email": req.email
+}
+
+
+
+
+@app.delete("/cancel-booking/{booking_uid}")
+def cancel_booking(booking_uid: str):
+    cal_response = cancel_booking_on_cal(booking_uid)
 
     return {
         "status": "success",
-        "local_saved": True,
+        "cancelled": True,
         "cal_response": cal_response
     }
