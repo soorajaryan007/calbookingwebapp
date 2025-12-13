@@ -15,3 +15,8 @@ export async function getAvailability(eventTypeId, date) {
 export async function bookSlotAPI(payload) {
   return axios.post(`${API_BASE}/book`, payload);
 }
+
+
+
+export const cancelBookingAPI = (bookingUid) =>
+  axios.delete(`${API_BASE}/cancel-booking/${bookingUid}`);

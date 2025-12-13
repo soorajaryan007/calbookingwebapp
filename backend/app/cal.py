@@ -52,3 +52,13 @@ def send_booking_to_cal(event_type_id, start, end, name, email):
         return response.json()
     except:
         return {"status": "error", "message": "Invalid response from Cal.com"}
+
+
+def cancel_booking_on_cal(booking_uid: str):
+    url = f"{BASE_URL}/bookings/{booking_uid}"
+    response = requests.delete(url, headers=HEADERS)
+
+    try:
+        return response.json()
+    except:
+        return {"status": "error", "message": "Invalid response from Cal.com"}
