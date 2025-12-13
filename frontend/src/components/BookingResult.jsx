@@ -6,13 +6,35 @@ export default function BookingResult({ result }) {
 
   // ❌ Booking failed
   if (result.status !== "success") {
-    return (
-      <div className="booking-result error">
-        <h3>Booking Failed ❌</h3>
-        <pre>{JSON.stringify(result, null, 2)}</pre>
-      </div>
-    );
-  }
+  const errorMessage =
+    result?.message ||
+    result?.cal_response?.error?.message ||
+    "Unable to complete booking. Please try again.";
+
+  const errorCode =
+    result?.cal_response?.error?.code || null;
+
+  return (
+    <div className="booking-result error">
+      <h3 style={{ color: "#dc2626" }}>Booking Failed ❌</h3>
+
+      <p style={{ marginTop: "8px", color: "#374151" }}>
+        {errorMessage}
+      </p>
+
+      {errorCode && (
+        <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "6px" }}>
+          Error code: <strong>{errorCode}</strong>
+        </p>
+      )}
+
+      <p style={{ fontSize: "12px", color: "#9ca3af", marginTop: "12px" }}>
+        Please select a different date or try again later.
+      </p>
+    </div>
+  );
+}
+
 
   // ✅ Data comes DIRECTLY from backend (flat structure)
   const bookingUid = result.booking_uid;
