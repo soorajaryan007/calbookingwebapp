@@ -77,3 +77,33 @@ def cancel_booking_on_cal(booking_uid: str):
 
     response.raise_for_status()
     return response.json()
+
+
+
+def reschedule_booking_on_cal(booking_uid: str, start: str, reason: str):
+    url = f"{BASE_URL}/bookings/{booking_uid}/reschedule"
+
+    headers = {
+        "Authorization": f"Bearer {CAL_API_KEY}",
+        "Content-Type": "application/json",
+        "cal-api-version": "2024-08-13",
+    }
+
+    payload = {
+        "start": start,  # MUST be ISO 8601
+        "reschedulingReason": reason,
+        "rescheduledBy": "patient",  # optional but nice
+    }
+
+    response = requests.post(
+        url,
+        headers=headers,
+        json=payload,
+        timeout=10
+    )
+
+    if response.status_code != 200:
+        print("Cal reschedule error:", response.status_code, response.text)
+
+    response.raise_for_status()
+    return response.json()
