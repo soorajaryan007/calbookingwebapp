@@ -24,6 +24,15 @@ BREAK_END = time(14, 0)
 # Fetch already booked slots
 # GLOBAL BLOCKING (any event)
 # -----------------------------
+
+
+def parse_db_time(value: str) -> datetime:
+    if value.endswith("Z"):
+        value = value.replace("Z", "+00:00")
+    dt = datetime.fromisoformat(value)
+    return dt.astimezone(CLINIC_TZ)
+
+
 def get_booked_slots(date: str):
     conn = get_connection()
     c = conn.cursor()
@@ -31,9 +40,9 @@ def get_booked_slots(date: str):
     c.execute(
         """
         SELECT start, end FROM bookings
-        WHERE date(start) = ?
+        WHERE start LIKE ?
         """,
-        (date,),
+        (f"{date}%",),
     )
 
     rows = c.fetchall()
@@ -42,11 +51,12 @@ def get_booked_slots(date: str):
     booked = []
     for start, end in rows:
         booked.append({
-            "start": datetime.fromisoformat(start),
-            "end": datetime.fromisoformat(end),
+            "start": parse_db_time(start),
+            "end": parse_db_time(end),
         })
 
     return booked
+
 
 # -----------------------------
 # Overlap check
@@ -84,10 +94,8 @@ def generate_slots(event_type_id: int, date: str):
         slot_end = current + timedelta(minutes=duration)
 
         # Skip lunch break
-        if not (
-            current.time() >= BREAK_START
-            and slot_end.time() <= BREAK_END
-        ):
+        if slot_end.time() <= BREAK_START or current.time() >= BREAK_END:
+
             # Skip past slots
             if current > now_ist:
                 # Skip slots already booked (ANY event)
