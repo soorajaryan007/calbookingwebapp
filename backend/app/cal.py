@@ -55,10 +55,25 @@ def send_booking_to_cal(event_type_id, start, end, name, email):
 
 
 def cancel_booking_on_cal(booking_uid: str):
-    url = f"{BASE_URL}/bookings/{booking_uid}"
-    response = requests.delete(url, headers=HEADERS)
+    url = f"{BASE_URL}/bookings/{booking_uid}/cancel"
 
-    try:
-        return response.json()
-    except:
-        return {"status": "error", "message": "Invalid response from Cal.com"}
+    headers = {
+        "Authorization": f"Bearer {CAL_API_KEY}",
+        "Content-Type": "application/json",
+        "cal-api-version": "v2",
+    }
+
+    payload = {
+        "cancellationReason": "User requested cancellation",
+        "cancelSubsequentBookings": True
+    }
+
+    response = requests.post(
+        url,
+        headers=headers,
+        json=payload,
+        timeout=10
+    )
+
+    response.raise_for_status()
+    return response.json()
