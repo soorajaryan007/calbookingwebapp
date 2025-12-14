@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { cancelBookingAPI } from "../api/api";
+import RescheduleBooking from "./RescheduleBooking";
 
 export default function BookingResult({ result }) {
   if (!result) return null;
@@ -86,39 +87,52 @@ export default function BookingResult({ result }) {
 
   // ✅ Success UI
   return (
-    <div className="booking-result success">
-      <h3>Booking Confirmed ✔</h3>
+    // ✅ Success UI
 
-      <p style={{ fontSize: "12px", color: "#888" }}>
-        Booking UID: {bookingUid}
-      </p>
+  <div className="booking-result success">
+    <h3>Booking Confirmed ✔</h3>
 
-      <p><strong>Patient:</strong> {name}</p>
-      <p><strong>Email:</strong> {email}</p>
-      <p><strong>Date:</strong> {date}</p>
-      <p><strong>Time:</strong> {start}</p>
-      <p><strong>Ends:</strong> {end}</p>
+    <p style={{ fontSize: "12px", color: "#888" }}>
+      Booking UID: {bookingUid}
+    </p>
 
-      {secondsLeft > 0 && (
-        <button
-          onClick={handleCancel}
-          disabled={loading}
-          style={{
-            marginTop: "14px",
-            padding: "10px",
-            width: "100%",
-            background: "#ef4444",
-            color: "#fff",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-          }}
-        >
-          {loading
-            ? "Cancelling..."
-            : `Cancel Booking (${secondsLeft}s)`}
-        </button>
-      )}
-    </div>
-  );
+    <p><strong>Patient:</strong> {name}</p>
+    <p><strong>Email:</strong> {email}</p>
+    <p><strong>Date:</strong> {date}</p>
+    <p><strong>Time:</strong> {start}</p>
+    <p><strong>Ends:</strong> {end}</p>
+
+    {/* 🔁 RESCHEDULE COMPONENT */}
+    <RescheduleBooking
+      bookingUid={bookingUid}
+      onSuccess={(data) => {
+        alert("Booking rescheduled successfully");
+        console.log("Rescheduled:", data);
+      }}
+    />
+
+    {/* ❌ Cancel button with countdown */}
+    {secondsLeft > 0 && (
+      <button
+        onClick={handleCancel}
+        disabled={loading}
+        style={{
+          marginTop: "14px",
+          padding: "10px",
+          width: "100%",
+          background: "#ef4444",
+          color: "#fff",
+          border: "none",
+          borderRadius: "8px",
+          cursor: "pointer",
+        }}
+      >
+        {loading
+          ? "Cancelling..."
+          : `Cancel Booking (${secondsLeft}s)`}
+      </button>
+    )}
+  </div>
+);
+
 }
